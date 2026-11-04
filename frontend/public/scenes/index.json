@@ -1,0 +1,98 @@
+[
+  {
+    "id": "A",
+    "name": "Laboratório do Recod",
+    "place": "Recod lab, Institute of Computing — Unicamp",
+    "registered": 378,
+    "frames": 400,
+    "densePoints": 1218412,
+    "triangles": 299999,
+    "dimensions": [
+      {
+        "name": "largura",
+        "realCm": 695,
+        "modelCm": 687.5688,
+        "errorCm": 7.4312,
+        "errorPct": 1.0692
+      },
+      {
+        "name": "comprimento",
+        "realCm": 1275,
+        "modelCm": 1268.8706,
+        "errorCm": 6.1294,
+        "errorPct": 0.4807
+      },
+      {
+        "name": "altura_porta",
+        "realCm": 212,
+        "modelCm": 210.0101,
+        "errorCm": 1.9899,
+        "errorPct": 0.9386
+      }
+    ]
+  },
+  {
+    "id": "B",
+    "name": "Sala 90",
+    "place": "Room 90, Institute of Computing — Unicamp",
+    "registered": 354,
+    "frames": 400,
+    "densePoints": 1301091,
+    "triangles": 299999,
+    "dimensions": [
+      {
+        "name": "largura",
+        "realCm": 620,
+        "modelCm": 581.3381,
+        "errorCm": 38.6619,
+        "errorPct": 6.2358
+      },
+      {
+        "name": "comprimento",
+        "realCm": 900,
+        "modelCm": 904.2487,
+        "errorCm": 4.2487,
+        "errorPct": 0.4721
+      },
+      {
+        "name": "altura_porta",
+        "realCm": 216,
+        "modelCm": 279.9381,
+        "errorCm": 63.9381,
+        "errorPct": 29.601
+      }
+    ]
+  },
+  {
+    "id": "C",
+    "name": "Copa do IC",
+    "place": "Kitchen, Institute of Computing — Unicamp",
+    "registered": 281,
+    "frames": 308,
+    "densePoints": 848467,
+    "triangles": 299999,
+    "dimensions": [
+      {
+        "name": "largura",
+        "realCm": 570,
+        "modelCm": 498.3902,
+        "errorCm": 71.6098,
+        "errorPct": 12.5631
+      },
+      {
+        "name": "comprimento",
+        "realCm": 580,
+        "modelCm": 579.3387,
+        "errorCm": 0.6613,
+        "errorPct": 0.114
+      },
+      {
+        "name": "altura_porta",
+        "realCm": 215,
+        "modelCm": 213.3328,
+        "errorCm": 1.6672,
+        "errorPct": 0.7754
+      }
+    ]
+  }
+]

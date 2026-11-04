@@ -1,0 +1,10 @@
+@if (scene(); as current) {
+    <app-room-viewer [scene]="current" (back)="back()" (openInfo)="showInfo.set(true)" />
+    @if (showInfo()) {
+        <app-info-sheet [scene]="current" (close)="showInfo.set(false)" />
+    }
+} @else {
+    <app-scene-picker (open)="open($event)" />
+}
+
+<app-busy-veil />

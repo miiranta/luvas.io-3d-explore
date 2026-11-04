@@ -1,0 +1,57 @@
+<main class="picker">
+    <header>
+        <h1>Explore 3D</h1>
+        <p class="lead">
+            Three rooms of the Institute of Computing at Unicamp, reconstructed from a walk with a
+            camera: structure from motion, metric scale from a checkerboard and multi-view stereo.
+            Pick one to explore it.
+        </p>
+    </header>
+
+    <div class="cards">
+        @for (card of cards(); track card.id) {
+            <button
+                type="button"
+                class="card"
+                [class.working]="loadingId() === card.id"
+                [disabled]="loadingId() !== null"
+                (click)="open.emit(card.id)"
+            >
+                <span class="thumb" [style.background-image]="'url(' + card.thumb + ')'">
+                    <span class="badge">{{ card.id }}</span>
+                </span>
+                <span class="text">
+                    <b class="name">{{ card.name }}</b>
+                    <span class="place">{{ card.place }}</span>
+                    <span class="stats">
+                        @for (stat of card.stats; track stat) {
+                            <span class="chip dim">{{ stat }}</span>
+                        }
+                    </span>
+                    <span class="dims">
+                        @for (d of card.dimensions; track d.label) {
+                            <span class="dim-row">
+                                <i>{{ d.label }}</i>
+                                <b [class.bad]="d.bad">{{ d.model }}</b>
+                                <i>tape {{ d.tape }}</i>
+                            </span>
+                        }
+                    </span>
+                </span>
+            </button>
+        } @empty {
+            @if (!error()) {
+                <p class="empty">Loading the scenes…</p>
+            }
+        }
+    </div>
+
+    @if (error()) {
+        <p class="toast">{{ error() }}</p>
+    }
+
+    <footer>
+        MO446 · Computer Vision · Unicamp — COLMAP 4.2 (SIFT, global mapper), checkerboard scale,
+        RANSAC room planes, PatchMatch stereo and Poisson meshing.
+    </footer>
+</main>

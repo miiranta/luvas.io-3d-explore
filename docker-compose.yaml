@@ -1,0 +1,6 @@
+services:
+  explore3d:
+    build: .
+    ports:
+      - '7140:7140'
+    restart: unless-stopped

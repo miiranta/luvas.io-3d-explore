@@ -1,0 +1,205 @@
+<canvas
+    #canvas
+    class="view"
+    (pointerdown)="down($event)"
+    (pointermove)="move($event)"
+    (pointerup)="up($event)"
+    (pointercancel)="up($event)"
+    (wheel)="wheel($event)"
+    (dblclick)="reframe()"
+    (contextmenu)="$event.preventDefault()"
+></canvas>
+
+@for (label of labels(); track $index) {
+    <span class="label" [style.left.px]="label.x" [style.top.px]="label.y">{{ label.text }}</span>
+}
+
+<div class="hud">
+    <button type="button" class="icon back" title="All scenes" (click)="back.emit()">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path
+                d="M14.8 5.4L8.2 12l6.6 6.6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+        </svg>
+    </button>
+    <span class="chip title"
+        ><b>{{ manifest().id }}</b> {{ manifest().name }}</span
+    >
+    <span class="chip summary dim">{{ summary() }}</span>
+    <span class="spacer"></span>
+    <button type="button" class="icon info" title="Metrics" (click)="openInfo.emit()">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="2.4" />
+            <circle cx="12" cy="7.6" r="1.5" fill="currentColor" />
+            <path
+                d="M12 11v6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.4"
+                stroke-linecap="round"
+            />
+        </svg>
+    </button>
+</div>
+
+<div class="rail" role="group" aria-label="Overlays">
+    <button
+        type="button"
+        class="icon cameras"
+        [class.on]="showCameras()"
+        [attr.aria-pressed]="showCameras()"
+        title="Camera poses"
+        (click)="toggle('cameras')"
+    >
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path
+                d="M3.5 7.5h11v9h-11zM14.5 10.5l6-3.2v9.4l-6-3.2"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linejoin="round"
+            />
+        </svg>
+    </button>
+    <button
+        type="button"
+        class="icon path"
+        [class.on]="showPath()"
+        [attr.aria-pressed]="showPath()"
+        title="Capture path"
+        (click)="toggle('path')"
+    >
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path
+                d="M4.5 18.5c3-1 2-6 6-6.5s3.5 3 6 2.5 2.5-6 3-9"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.4"
+                stroke-linecap="round"
+            />
+            <circle cx="4.5" cy="18.5" r="2" fill="currentColor" />
+        </svg>
+    </button>
+    <button
+        type="button"
+        class="icon box"
+        [class.on]="showBox()"
+        [attr.aria-pressed]="showBox()"
+        title="Room box measured by RANSAC"
+        (click)="toggle('box')"
+    >
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path
+                d="M4 8.5L12 4.5l8 4v8l-8 4-8-4zM4 8.5l8 4 8-4M12 12.5v8"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.1"
+                stroke-linejoin="round"
+            />
+        </svg>
+    </button>
+    <button
+        type="button"
+        class="icon cutaway"
+        [class.on]="cutaway()"
+        [attr.aria-pressed]="cutaway()"
+        title="Cutaway: hide the ceiling and the nearest wall"
+        (click)="toggle('cutaway')"
+    >
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path
+                d="M4 9l8-4.5 8 4.5v7l-8 4.5-8-4.5z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.1"
+                stroke-linejoin="round"
+                stroke-dasharray="3 2.2"
+            />
+            <path
+                d="M8 13.5l4 2.2 4-2.2"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.1"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+        </svg>
+    </button>
+</div>
+
+@if (error()) {
+    <p class="toast">{{ error() }}</p>
+}
+
+@if (measuring()) {
+    <p class="hint">
+        {{ distance() ? 'Tap again to start a new measurement' : 'Tap two points of the room' }}
+    </p>
+}
+
+<div class="dock">
+    <button
+        type="button"
+        class="icon tour"
+        [class.on]="touring()"
+        [attr.aria-pressed]="touring()"
+        [title]="touring() ? 'Stop the walk' : 'Walk the capture path'"
+        (click)="toggleTour()"
+    >
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            @if (touring()) {
+                <path d="M7.5 6h3v12h-3zM13.5 6h3v12h-3z" fill="currentColor" />
+            } @else {
+                <path d="M8 5.5v13l10.5-6.5z" fill="currentColor" stroke-linejoin="round" />
+            }
+        </svg>
+    </button>
+
+    <div class="segmented" role="group" aria-label="Layer">
+        <button
+            type="button"
+            [class.on]="layer() === 'mesh'"
+            [disabled]="!hasMesh()"
+            (click)="choose('mesh')"
+        >
+            Mesh
+        </button>
+        <button type="button" [class.on]="layer() === 'dense'" (click)="choose('dense')">
+            Dense
+        </button>
+        <button type="button" [class.on]="layer() === 'sparse'" (click)="choose('sparse')">
+            Sparse
+        </button>
+    </div>
+
+    <button
+        type="button"
+        class="icon measure"
+        [class.on]="measuring()"
+        [attr.aria-pressed]="measuring()"
+        title="Measure"
+        (click)="toggleMeasure()"
+    >
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path
+                d="M3.8 15.6l11.8-11.8 4.6 4.6L8.4 20.2z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linejoin="round"
+            />
+            <path
+                d="M8.2 11.2l2 2M11 8.4l2 2M13.8 5.6l2 2"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+            />
+        </svg>
+    </button>
+</div>
